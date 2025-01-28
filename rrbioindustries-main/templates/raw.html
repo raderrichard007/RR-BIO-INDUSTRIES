@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RR Bio Industries</title>
+    <link rel="icon" href="rr.png" type="image/x-icon">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+        body {
+            background-color: #eef2f5;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            background-image: linear-gradient(180deg, #12c2e9, #c471ed, #f64f59);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            font-size: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        table {
+            width: 90%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f64f59;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            font-size: 1em;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #1e67b0;
+            color: white;
+            text-transform: uppercase;
+        }
+        td {
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: rgb(209, 102, 45);
+            outline: none;
+        }
+        .balance {
+            font-weight: bold;
+            color: #185a9d;
+        }
+        button {
+            background-color: #f64f59;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button:hover {
+            background-color: #185a9d;
+        }
+        .form-container {
+            width: 90%;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        .center {
+            text-align: center;
+        }
+        /* Custom modal popup */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content p {
+            font-size: 1.2em;
+            color: #333;
+        }
+        .close-btn {
+            background-color: #43cea2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .close-btn:hover {
+            background-color: #185a9d;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Raw Material</h1>
+
+    <div class="form-container">
+        <form id="raw-material-form">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opening Stock</th>
+                        <th>Daily Usage</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="date-input" value="2024-05-25"></td>
+                        <td><input type="number" class="number-input" value="10" oninput="calculateBalance(this)"></td>
+                        <td><input type="number" class="number-input" value="20" oninput="calculateBalance(this)"></td>
+                        <td><span class="balance">-10</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="center">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal for Save Response -->
+    <div id="save-modal" class="modal">
+        <div class="modal-content">
+            <p>Form has been successfully submitted!</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        function calculateBalance(input) {
+            const row = input.closest('tr');
+            const openingValue = parseInt(row.cells[1].querySelector('input').value) || 0;
+            const dailyUseValue = parseInt(row.cells[2].querySelector('input').value) || 0;
+            const balance = openingValue - dailyUseValue;
+            row.cells[3].querySelector('.balance').textContent = balance;
+        }
+
+        function addRow() {
+            const tableBody = document.querySelector('table tbody');
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td><input type="text" class="date-input"></td>
+                <td><input type="number" class="number-input" value="0" oninput="calculateBalance(this)"></td>
+                <td><input type="number" class="number-input" value="0" oninput="calculateBalance(this)"></td>
+                <td><span class="balance">0</span></td>
+            `;
+            tableBody.appendChild(newRow);
+            flatpickr(".date-input", {
+                dateFormat: "Y-m-d"
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('save-modal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.number-input').forEach(input => {
+                input.addEventListener('input', () => calculateBalance(input));
+            });
+
+            // Initialize Flatpickr for existing inputs
+            flatpickr(".date-input", {
+                dateFormat: "Y-m-d"
+            });
+
+            // Handle form submission
+            const form = document.getElementById('raw-material-form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent form from reloading the page
+                
+                // Display the modal
+                document.getElementById('save-modal').style.display = 'block';
+            });
+        });
+    </script>
+
+</body>
+</html>

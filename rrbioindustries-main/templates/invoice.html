@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/logo.png" type="image/png">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .invoice-box {
+            width: 800px;
+            padding: 30px;
+            border: 1px solid #000;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+            border-collapse: collapse;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #000;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td {
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #000;
+            font-weight: bold;
+        }
+
+        .tfoot {
+            width: 70%;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 90%;
+            padding: 8px;
+            margin: 3px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="number"]:read-only {
+            background-color: #f0f0f0;
+        }
+
+        button {
+            background-color: #25e7dd;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 16px;
+            margin: 20px auto;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        @media print {
+            button,
+            .button-container {
+                display: none;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"] {
+                border: none;
+                background-color: transparent;
+                font-size: 16px;
+            }
+        }
+
+        .align-right {
+            text-align: right;
+        }
+
+        /* Responsive layout */
+        @media screen and (max-width: 768px) {
+            .invoice-box {
+                width: 100%;
+                padding: 20px;
+            }
+
+            table td,
+            table th {
+                font-size: 12px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"] {
+                width: 100%;
+            }
+
+            button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-box" id="invoiceBox">
+        <table>
+            <tr class="top">
+                <td colspan="6">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="/static/logo.png" alt="RR BIO INDUSTRIES" style="width:100%; max-width:150px;">
+                            </td>
+                            <td>
+                                <strong>RR BIO INDUSTRIES</strong><br>
+                                Plot No. 79, Periyar Salai, Nanbargal Nagar, Seduthankuppam Village,<br>
+                                Kattukudalore Panchayat, Panruti Taluk, Cuddalore Dist - 607 803.<br>
+                                <strong>Email:</strong> jeromexavierlawrance@gmail.com<br>
+                                <strong>Cell:</strong> 9600549770<br>
+                                <strong>GSTIN:</strong> 33BBPPL7497FZ23
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="information">
+                <td colspan="6">
+                    <table>
+                        <tr>
+                            <td>
+                                Invoice No: <b><span id="invoiceNumber"></span></b><br>
+                                Invoice Date: <input type="date" id="invoiceDate">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="heading">
+                <td colspan="6">Name: <input type="text" id="customerName" placeholder="Customer Name"></td>
+            </tr>
+            <tr class="heading">
+                <td colspan="6">Address: <input type="text" id="customerAddress" placeholder="Customer Address"></td>
+            </tr>
+            <tr class="heading">
+                <td>S.No</td>
+                <td>Particulars</td>
+                <td>Size</td>
+                <td>Qty</td>
+                <td>Rate</td>
+                <td>Amount Rs.</td>
+            </tr>
+            <tbody id="invoiceItems">
+                <tr class="item" colspan="5">
+                    <td>1</td>
+                    <td><input type="text" class="item-particulars" placeholder="Item Description"></td>
+                    <td><input type="text" class="item-size" placeholder="Size"></td>
+                    <td><input type="number" class="item-qty" placeholder="Qty" oninput="calculateAmount(this)"></td>
+                    <td><input type="number" class="item-rate" placeholder="Rate" oninput="calculateAmount(this)"></td>
+                    <td><input type="number" class="item-amount" readonly></td>
+                </tr>
+            </tbody>
+            <tfoot class="tfoot">
+                <tr>
+                    <td colspan="5" class="align-right"><b>Total Rs.</b></td>
+                    <td><input type="number" id="totalAmount" readonly></td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="align-right"><b>CGST %</b></td>
+                    <td><input type="number" id="cgst" oninput="calculateTotal()" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="align-right"><b>SGST %</b></td>
+                    <td><input type="number" id="sgst" oninput="calculateTotal()" placeholder="0"></td>
+                </tr>
+                <tr class="total">
+                    <td colspan="5" class="align-right"><b>Grand Total</b></td>
+                    <td><input type="number" id="grandTotal" readonly></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="button-container">
+            <button onclick="addItem()">Add Item</button>
+            <button onclick="printInvoice()">Print</button>
+            <button onclick="downloadInvoice()">Download</button>
+        </div>
+    </div>
+
+    <script>
+        let invoiceNumber = 1;
+
+        function generateInvoiceNumber() {
+            const formattedNumber = String(invoiceNumber).padStart(3, '0');
+            document.getElementById('invoiceNumber').textContent = formattedNumber;
+            invoiceNumber++;
+        }
+
+        function calculateAmount(element) {
+            const row = element.parentElement.parentElement;
+            const qty = row.querySelector('.item-qty').value;
+            const rate = row.querySelector('.item-rate').value;
+            const amount = row.querySelector('.item-amount');
+            amount.value = qty * rate;
+
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const amounts = document.querySelectorAll('.item-amount');
+            let total = 0;
+            amounts.forEach(amount => {
+                total += parseFloat(amount.value) || 0;
+            });
+            document.getElementById('totalAmount').value = total;
+
+            const cgst = parseFloat(document.getElementById('cgst').value) || 0;
+            const sgst = parseFloat(document.getElementById('sgst').value) || 0;
+            const grandTotal = total + (total * cgst / 100) + (total * sgst / 100);
+            document.getElementById('grandTotal').value = grandTotal;
+        }
+
+        function addItem() {
+            const tableBody = document.getElementById('invoiceItems');
+            const newRow = document.createElement('tr');
+            newRow.classList.add('item');
+            newRow.innerHTML = `
+                <td>${tableBody.children.length + 1}</td>
+                <td><input type="text" class="item-particulars" placeholder="Item Description"></td>
+                <td><input type="text" class="item-size" placeholder="Size"></td>
+                <td><input type="number" class="item-qty" placeholder="Qty" oninput="calculateAmount(this)"></td>
+                <td><input type="number" class="item-rate" placeholder="Rate" oninput="calculateAmount(this)"></td>
+                <td><input type="number" class="item-amount" readonly></td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        function downloadInvoice() {
+            const invoiceBox = document.getElementById('invoiceBox');
+            html2canvas(invoiceBox).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+                pdf.addImage(imgData, 'PNG', 0, 0);
+                pdf.save('invoice.pdf');
+            });
+        }
+
+        // Generate the first invoice number on page load
+        window.onload = generateInvoiceNumber;
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
+</body>
+
+</html>

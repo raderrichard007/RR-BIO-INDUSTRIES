@@ -1,0 +1,70 @@
+<!-- templates/salary_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f64f59;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Salary Information</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Month</th>
+                <th>Basic Salary</th>
+                <th>Total Days Present</th>
+                <th>Total Salary</th>
+                <th>Deductions</th>
+                <th>Bonuses</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for salary in salaries %}
+            <tr>
+                <td>{{ salary.member.name }}</td>
+                <td>{{ salary.month|date:"F Y" }}</td>
+                <td>${{ salary.basic_salary|floatformat:2  }}</td>
+                <td>{{ salary.total_days_present }}</td>
+                <td>${{ salary.total_salary|floatformat:2  }}</td>
+                <td>${{ salary.deductions|default_if_none:"0.00" }}</td>
+                <td>${{ salary.bonuses|default_if_none:"0.00" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

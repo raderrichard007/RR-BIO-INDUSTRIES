@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/logo.png" type="image/png">
+    <link rel="stylesheet" href="/static/stock.css" >
+    <title>Stock List</title>
+</head>
+
+<body>
+    <center>
+        <h1>Stock list</h1>
+    </center>
+    <form method="POST" action="{% url 'stock_list' %}">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Opening</th>
+                    <th>Daily Use</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="date" name="date" value="{{ today_date }}"></td>
+                    <td><input type="number" class="number-input" name="opening" value="0"></td>
+                    <td><input type="number" class="number-input" name="daily_use" value="0"></td>
+                    <td><span class="balance">0</span></td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <center>
+            <button type="submit">Save</button>
+        </center>
+    </form>
+
+    <script>
+        document.addEventListener('input', function(e) {
+            if (e.target && (e.target.name === 'opening' || e.target.name === 'daily_use')) {
+                const row = e.target.closest('tr');
+                const opening = parseFloat(row.querySelector('input[name="opening"]').value) || 0;
+                const dailyUse = parseFloat(row.querySelector('input[name="daily_use"]').value) || 0;
+                const balance = opening - dailyUse;
+                row.querySelector('.balance').innerText = balance.toFixed(2);
+            }
+        });
+    </script>
+</body>
+
+</html>

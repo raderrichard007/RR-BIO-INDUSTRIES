@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREDIT NOTE</title>
+    <link rel="icon" href="/static/logo.png" type="image/png">
+    <link rel="stylesheet" href="/static/credit.css">
+</head>
+
+<body>
+    <h1>CREDIT DETAILS</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Shop Name Details</th>
+                <th>Total Amount</th>
+                <th>Advance Amount</th>
+                <th>Balance</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="date" name="date" min="1997-01-01" max="2030-12-31"></td>
+                <td><input type="text" class="details-input" placeholder="Enter details"></td>
+                <td><input type="number" class="number-input" value="" oninput="calculateBalance(this)"></td>
+                <td><input type="number" class="number-input" value="" oninput="calculateBalance(this)"></td>
+                <td><span class="balance">0</span></td>
+                <td><button class="saved" onclick="saveRow(this)">Save</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="add-row-button" onclick="addRow()">Add Row</button>
+
+    <script>
+        function calculateBalance(input) {
+            var row = input.parentNode.parentNode;
+            var openingValue = parseInt(row.cells[2].querySelector('.number-input').value) || 0;
+            var dailyUseValue = parseInt(row.cells[3].querySelector('.number-input').value) || 0;
+            var balance = openingValue - dailyUseValue;
+            row.cells[4].querySelector('span').textContent = balance;
+        }
+
+        function addRow() {
+            var table = document.querySelector('table tbody');
+            var newRow = table.insertRow();
+
+            var cells = [
+                newRow.insertCell(),
+                newRow.insertCell(),
+                newRow.insertCell(),
+                newRow.insertCell(),
+                newRow.insertCell(),
+                newRow.insertCell()
+            ];
+
+            cells[0].innerHTML = '<input type="date" name="date" min="1997-01-01" max="2030-12-31">';
+            cells[1].innerHTML = '<input type="text" class="details-input" placeholder="Enter details">';
+            cells[2].innerHTML = '<input type="number" class="number-input" value="" oninput="calculateBalance(this)">';
+            cells[3].innerHTML = '<input type="number" class="number-input" value="" oninput="calculateBalance(this)">';
+            cells[4].innerHTML = '<span class="balance">0</span>';
+            cells[5].innerHTML = '<button class="saved" onclick="saveRow(this)">Save</button>';
+        }
+
+        function saveRow(button) {
+            var row = button.parentNode.parentNode;
+            var details = row.cells[1].querySelector('.details-input').value.trim();
+            if (details === "") {
+                alert("Details cannot be empty!");
+                return;
+            }
+            // Add your save logic here
+            alert("Data saved!");
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" href="/static/logo.png" type="image/png">
+    <link rel="stylesheet" href="/static/homepage.css">
+</head>
+<style>
+    .logout-button {
+        box-sizing: border-box;
+        text-align: right;
+        padding: 20px;
+        margin-left: 23px;
+        margin-right: auto;
+    }
+
+    .glow-on-hover.log {
+        width: 75px !important;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+    .glow-on-hover.log:hover:before {
+        opacity: 1;
+    }
+</style>
+
+<body>
+    <div class="header">
+        <h1>
+            <span style="--i:1;">R</span>
+            <span style="--i:2;">R</span>
+            <span style="--i:3;margin-left: 25px;">B</span>
+            <span style="--i:4;">I</span>
+            <span style="--i:5;">O</span>
+            <span style="--i:6;margin-left: 25px;">I</span>
+            <span style="--i:7;">N</span>
+            <span style="--i:8;">D</span>
+            <span style="--i:9;">U</span>
+            <span style="--i:10;">S</span>
+            <span style="--i:11;">T</span>
+            <span style="--i:12;">R</span>
+            <span style="--i:13;">I</span>
+            <span style="--i:14;">E</span>
+            <span style="--i:15;">S</span>
+        </h1>
+
+
+        <!-- Logout button -->
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'logout' %}" class="logout-button">
+            {% csrf_token %}
+            <button type="submit" style="margin-right: 0px; margin-left: 0px; color: red;" class="glow-on-hover log">Logout</button>
+        </form>
+        {% endif %}
+    </div>
+
+
+    <div class="button-container">
+        <a href="{% url 'attendance_form' %}"><button class="glow-on-hover" type="button"> Attendance </button></a>
+        <a href="stock"><button class="glow-on-hover" type="button">Stock </button></a>
+        <a href="raw"><button class="glow-on-hover" type="button"> Raw Material </button></a>
+        <a href="daily_production"><button class="glow-on-hover" type="button"> Daily production </button></a>
+        <a href="#"><button class="glow-on-hover" type="button"> Sales Regiester </button></a>
+        <a href="salary_page"><button class="glow-on-hover" type="button"> Salary </button></a>
+        <a href="credit"><button class="glow-on-hover" type="button"> Daily Credit </button></a>
+        <a href="{% url 'invoice' %}"><button class="glow-on-hover" type="button"> Customer Bill </button></a>
+    </div>
+</body>
+
+</html>

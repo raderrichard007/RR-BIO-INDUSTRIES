@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/attendance/attendance.css">
+    <title>Attendance Form</title>
+</head>
+<body>
+    <div>
+        <h1>Attendance Form</h1>
+        <form id="attendanceForm" method="POST" action="{% url 'attendance_form' %}">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Date</th>
+                        <th>Time In</th>
+                        <th>Time Out</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>{{ member.name }}</td>
+                        <td><input type="date" name="date_{{ member.id }}" required class="details-input"></td>
+                        <td><input type="time" name="time_in_{{ member.id }}" required class="details-input"></td>
+                        <td><input type="time" name="time_out_{{ member.id }}" required class="details-input"></td>
+                        <td>
+                            <input type="radio" id="present_{{ member.id }}" name="attendance_{{ member.id }}" value="present" required>
+                            <label for="present_{{ member.id }}">Present</label>
+                            <input type="radio" id="absent_{{ member.id }}" name="attendance_{{ member.id }}" value="absent">
+                            <label for="absent_{{ member.id }}">Absent</label>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <button type="button" onclick="saveAttendance()" class="saved">Save Attendance</button>
+                            <button type="reset" class="absent">Reset</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+        <a href="{% url 'add_member' %}" class="add-row-button">Add Member</a>
+    </div>
+
+    <script src="/static/attendance/attendance.js"></script>
+    <script>
+        function saveAttendance() {
+            var form = document.getElementById('attendanceForm');
+            form.submit();  // Submit the form via POST
+        }
+    </script>
+</body>
+</html>
